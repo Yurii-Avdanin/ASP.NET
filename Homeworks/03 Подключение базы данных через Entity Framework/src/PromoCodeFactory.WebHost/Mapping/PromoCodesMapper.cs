@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using PromoCodeFactory.WebHost.Models.PromoCodes;
 
@@ -16,5 +17,20 @@ public static class PromoCodesMapper
             promoCode.EndDate,
             promoCode.PartnerManager.Id,
             promoCode.Preference.Id);
+    }
+
+    public static CustomerPromoCodeResponse ToCustomerPromoCodeResponse(PromoCode promoCode, CustomerPromoCode customerPromoCode)
+    {
+        return new CustomerPromoCodeResponse(
+            Id: promoCode.Id,
+            Code: promoCode.Code,
+            ServiceInfo: promoCode.ServiceInfo,
+            PartnerName: promoCode.PartnerName,
+            BeginDate: promoCode.BeginDate,
+            EndDate: promoCode.EndDate,
+            PartnerManagerId: promoCode.PartnerManager.Id,
+            PreferenceId: promoCode.Preference.Id,
+            CreatedAt: customerPromoCode.CreatedAt,
+            AppliedAt: customerPromoCode.AppliedAt);
     }
 }
