@@ -1,0 +1,9 @@
+**/*.sqlite
+**/bin
+**/obj
+
+**/.vs
+**/.dockerignore
+**/.editorconfig
+**/Dockerfile*
+**/docker-compose*
