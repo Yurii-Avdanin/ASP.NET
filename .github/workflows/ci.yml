@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:    
+    branches:
+      - homework-11-#6
+    
+    paths:
+      - 'Homeworks/06 Настройка CI/**'  
+  
+  workflow_dispatch:
+
+env:
+  # Реестр контейнеров - GitHub Container Registry
+  REGISTRY: ghcr.io
+
+  # Имя образа: имя_пользователя/репозиторий/promocode-factory-api
+  IMAGE_NAME: ${{ github.repository }}/promocode-factory-api
+  TAG: '1.0.0'
+
+jobs:  
+  test:
+    runs-on: ubuntu-latest
+    steps:      
+      - name: Checkout code
+        uses: actions/checkout@v4 
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Сборка и пуш Docker-образа
+        uses: docker/build-push-action@v5
+        with:
+          context: 'Homeworks/06 Настройка CI/src'
+          file: 'Dockerfile'
+          push: true
+          tags:  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
