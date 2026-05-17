@@ -3,7 +3,7 @@ name: CI
 on:
   push:    
     branches:
-      - homework-11-#6
+      - "homework-11-#6"
     
     paths:
       - 'Homeworks/06 Настройка CI/**'  
@@ -36,6 +36,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: "Homeworks/06 Настройка CI/src"
-          file: Dockerfile
+          file: ./Dockerfile
           push: true
           tags:  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
