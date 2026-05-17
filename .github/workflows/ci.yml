@@ -6,7 +6,7 @@ on:
       - homework-11-#6
     
     paths:
-      - 'Homeworks/06 Настройка CI/**'  
+      - "Homeworks/06 Настройка CI/**"
   
   workflow_dispatch:
 
