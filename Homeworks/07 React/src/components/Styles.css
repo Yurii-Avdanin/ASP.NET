@@ -1,0 +1,33 @@
+.panel-green {
+    margin-top: 10px;
+    padding: 8px;
+    background-color: green;
+    text-align: left;
+}
+  
+.panel-green-item {
+    color: black;
+    padding: 4px;
+    border: 1px dashed black;
+    margin-bottom: 4px;
+}
+
+.panel-red {
+    margin-top: 10px;
+    padding: 8px;
+    background-color: red;
+    color: black;    
+}
+
+.button-api {
+    background-color: #007bff;
+    color: white;    
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.ramka {
+    padding: 20px;    
+}
