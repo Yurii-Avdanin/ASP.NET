@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-import { loginSuccess, loginFailure, clearError } from '../../store/Reducers/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import type { RootState } from '../../store';
+import { loginSuccess, loginFailure, clearError } from '../../store/Reducers/authSlice';
 import { Container } from 'react-bootstrap';
 import AuthCard from '../Cards/AuthCard'; 
 import type { AuthFormInputData } from "../Abstractions/AuthFormInputData";
-import type { RootState } from '../../store';
-import { useSelector } from 'react-redux';
+
 
 const PageLoginUser: React.FC = () => {  
   const [fromData, setFromData] = useState<AuthFormInputData>({login: '', password: ''});
@@ -54,13 +54,18 @@ const PageLoginUser: React.FC = () => {
     setFromData((prev) => ({ ...prev, [name]: value }));    
     dispatch(clearError());
   };
-
+  
+  const handleRegisterClick = () => {
+    navigate('/register');
+  };
+  
   return (
     <Container>
       <AuthCard
         fromData={fromData}        
         onChange={handleChange}
         onSubmit={handleLogin}
+        onRedirectRegestry={handleRegisterClick}
       />      
     </Container>
   );  
