@@ -1,0 +1,11 @@
+.Card {    
+    background-color: rgb(157, 152, 184);    
+    max-width: 90%;    
+    margin: 0 auto;
+    margin-top: 2em;
+    box-shadow: 12px 12px 20px  rgb(11, 12, 48);
+}
+
+.Alert {
+    margin-top: 10px;
+}
