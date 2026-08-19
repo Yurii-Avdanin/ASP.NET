@@ -1,9 +1,14 @@
 import React, { useState, useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Container} from 'react-bootstrap';
 import RegistrationCard from '../Cards/RegistrationCard'; 
-import type { UserFormInputData } from "../Abstractions/UserFormInputData";
-import type { RootState } from '../../store';
-import { useSelector } from 'react-redux';
+import { type UserFormInputData } from "../Abstractions/UserFormInputData";
+import { type User } from "../Abstractions/User";
+import { type RootState } from '../../store';
+import { addUser } from '../../store/Reducers/usersSlice';
+import { type ButtonForm } from '../Abstractions/ButtonForm';
+import ShowModal from '../ModalForms/ShowModal';
 
 const PageRegisterUser: React.FC = () => {
   const [formInputData, setFormInputData] = useState<UserFormInputData>({
@@ -14,6 +19,8 @@ const PageRegisterUser: React.FC = () => {
     confirmPassword: ''
   });
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<boolean>(false);
   const users = useSelector((state: RootState) => state.users);  
@@ -52,10 +59,51 @@ const PageRegisterUser: React.FC = () => {
       setError('Пароль должен содержать минимум 3 символов');
       return;
     }
-    
-    console.log('Пользователь зарегистрирован.  object:', formInputData);
-    setSuccess(true);     
+
+    const newUser: User = {
+      login: formInputData.login,
+      password: formInputData.password,
+      username: formInputData.username,
+      email: formInputData.email
+    };
+
+    dispatch(addUser(newUser));
+
+    console.log('Пользователь зарегистрирован.  object (user):', newUser);
+    setShowModal(true);
   };
+
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const handleRedirect = () => {
+    setShowModal(false);   
+    setFormInputData({
+      login: '',
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: ''});
+
+    navigate('/login');
+  };  
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setFormInputData({
+      login: '',
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: ''});
+  };
+  
+  const [buttonOk] = useState<ButtonForm>({Caption: 'Вход', onClick: handleRedirect});
+  const [buttonClose] = useState<ButtonForm>({Caption: 'Закрыть', onClick: handleCloseModal});
+
+  const messages = [
+    `Пользователь "${formInputData.login}" успешно зарегистрирован!`,
+    'Теперь вы можете войти в систему.'    
+  ];
 
   return (    
     <Container>
@@ -65,8 +113,14 @@ const PageRegisterUser: React.FC = () => {
         onSubmit={handleSubmit}
         error={error}
         success={success}
+      />      
+      <ShowModal
+        messages={messages}
+        buttonClose={buttonClose}
+        buttonOk={buttonOk}
+        showModal={showModal}
       />
-    </Container>
+    </Container>    
   );
 };
 

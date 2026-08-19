@@ -4,7 +4,8 @@ import type { RootState } from '../../store';
 import { useSelector } from 'react-redux';
 import './_Styles.css';
 
-const AuthCard = ({ fromData, onChange, onSubmit }: AuthFormProps) => {
+
+const AuthCard = ({ fromData, onChange, onSubmit, onRedirectRegestry }: AuthFormProps) => {
     const error = useSelector((state: RootState) => state.auth.error);
 
     return (
@@ -38,10 +39,15 @@ const AuthCard = ({ fromData, onChange, onSubmit }: AuthFormProps) => {
                   required
                 />
               </Form.Group>
-    
-              <Button variant="primary" type="submit" className="w-100">
-                Войти
-              </Button>
+              
+              <Form.Group className="d-flex justify-content-end gap-2">
+                <Button variant="outline-secondary" type="button" className="w-80" onClick={onRedirectRegestry} >
+                  Регистрация
+                </Button>
+                <Button variant="primary" type="submit" className="w-100">
+                  Войти
+                </Button>
+              </Form.Group>
             </Form>
 
             {error && <Alert className="Alert" variant="danger">{error}</Alert>}
@@ -51,3 +57,4 @@ const AuthCard = ({ fromData, onChange, onSubmit }: AuthFormProps) => {
 };
     
 export default AuthCard;
+
