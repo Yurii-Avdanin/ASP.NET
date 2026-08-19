@@ -14,7 +14,7 @@ const RegisterUser = IsAuthUser(PageRegisterUser);
 
 const AppRoutes = () => (
   <div>    
-    <Headline text={'Домашняя работа №7'}/>  
+    <Headline text={'Домашняя работа №8'}/>  
     <Routes>
       <Route path="/" element={<CurrentPage/> } />      
       <Route path="/login" element={<LoginUser/> } />
