@@ -1,0 +1,9 @@
+.CardTitle {    
+    background-color: rgb(189, 186, 207);    
+    color: blue;
+    max-width: 90%; 
+    margin: 0 auto;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    box-shadow: 18px 18px 24px  rgb(7, 12, 158);
+}

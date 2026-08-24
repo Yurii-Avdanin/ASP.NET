@@ -1,0 +1,30 @@
+services:
+  backend:
+    image: homework/weather-api:1.0.1
+    container_name: weather-api    
+    ports:
+      - "6008:80"
+    environment:      
+      ASPNETCORE_URLS: http://+:80
+      CORS__Origins__0: "http://10.10.2.10:9090"
+      CORS__Origins__1: "http://192.168.0.56:5174"
+      CORS__Origins__2: "http://localhost:5174"
+
+    networks:
+      - wc_net
+
+  frontend:    
+    image: homework/weather-front:1.0.1
+    container_name: weather-front    
+    ports:
+      - "5173:80"
+    environment:
+      API_URL: http://backend:80
+    networks:
+      - wc_net
+      
+networks:
+  wc_net:
+    external: true
+    name: working  
+    
