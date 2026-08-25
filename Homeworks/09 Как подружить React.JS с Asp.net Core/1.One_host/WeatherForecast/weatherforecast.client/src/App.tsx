@@ -13,7 +13,7 @@ interface Forecast {
 const url_WeatherForecast = `/WeatherForecast`;
 
 function App() {
-    const [forecasts, setForecasts] = useState<Forecast[]>();
+    const [forecasts, setForecasts] = useState<Forecast[]>([]);
 
     useEffect(() => {
         populateWeatherData();
@@ -54,9 +54,18 @@ function App() {
 
     async function populateWeatherData() {
         try {
-            const response = await axios.get(`${url_WeatherForecast}`);
+            const response = await axios.get(url_WeatherForecast);
             console.log('Статус ответа:', response.status);            
-            setForecasts(response.data);
+
+            //console.log('Тип response.data:', typeof response.data);
+            //console.log('Содержимое response.data:', response.data);
+
+            if (Array.isArray(response.data)) {
+                setForecasts(response.data);
+            }
+            else {
+                throw new Error('Ошибка формата данных. Возможно, бэкенд не работает.');
+            }
         }
         catch (error) {
             if (axios.isAxiosError(error)) {            

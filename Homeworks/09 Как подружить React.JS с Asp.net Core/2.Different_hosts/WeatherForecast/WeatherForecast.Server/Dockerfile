@@ -17,5 +17,5 @@ RUN dotnet publish "./WeatherForecast.csproj" -c Release -o /app/publish -p:UseA
 
 FROM base AS final
 WORKDIR /app
-COPY --from=build-all /app/publish ./
+COPY --from=build /app/publish ./
 ENTRYPOINT ["dotnet", "WeatherForecast.dll"]

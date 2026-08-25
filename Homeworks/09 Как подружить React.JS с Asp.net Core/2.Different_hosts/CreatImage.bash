@@ -1,6 +1,6 @@
 #!/bin/bash
 
-run_script_build_image() {    
+run_script_build_image() {
     local IMAGE_NAME="$1"
     local PATH_PROJECT="$2"
     local PATH_DOCKEFILE="$3"

@@ -1,10 +1,8 @@
 services:
-  weather-forecast:    
+  weather-forecast:
     image: homework/weather-forecast:1.0.1
-    container_name: weather-forecast     
+    container_name: weather-forecast
     ports:
       - "6000:80"
-    environment:      
-      ASPNETCORE_URLS: http://+:80      
-      
-    
+    environment:
+      ASPNETCORE_URLS: http://+:80
