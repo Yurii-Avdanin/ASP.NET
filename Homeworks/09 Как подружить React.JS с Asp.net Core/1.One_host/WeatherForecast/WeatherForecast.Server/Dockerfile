@@ -11,12 +11,20 @@ RUN apt-get update -yq && \
 
 WORKDIR /src
 
+COPY ./WeatherForecast/weatherforecast.client/package*.json ./WeatherForecast/weatherforecast.client/
+COPY ./WeatherForecast/weatherforecast.client/weatherforecast.client.esproj ./WeatherForecast/weatherforecast.client/
 COPY ./WeatherForecast/WeatherForecast.Server/WeatherForecast.Server.csproj ./WeatherForecast/WeatherForecast.Server/
 RUN dotnet restore "./WeatherForecast/WeatherForecast.Server/WeatherForecast.Server.csproj"
 
-COPY ./WeatherForecast ./WeatherForecast/
-RUN dotnet build "./WeatherForecast/WeatherForecast.Server/WeatherForecast.Server.csproj" -c Release --no-restore
-RUN dotnet publish "./WeatherForecast/WeatherForecast.Server/WeatherForecast.Server.csproj" -c Release -o /app/publish -p:UseAppHost=false --no-restore --no-build
+RUN dotnet restore ./WeatherForecast/WeatherForecast.Server/WeatherForecast.Server.csproj
+
+COPY ./WeatherForecast/. ./WeatherForecast/
+
+RUN echo "[folder] /src/WeatherForecast/weatherforecast.client" && ls -la ./WeatherForecast/weatherforecast.client
+RUN echo "[folder] /src/WeatherForecast/WeatherForecast.Server" && ls -la ./WeatherForecast/WeatherForecast.Server
+
+RUN dotnet build ./WeatherForecast/WeatherForecast.Server/WeatherForecast.Server.csproj -c Release --no-restore
+RUN dotnet publish ./WeatherForecast/WeatherForecast.Server/WeatherForecast.Server.csproj -c Release -o /app/publish -p:UseAppHost=false --no-build --no-restore
 
 
 FROM base AS final
