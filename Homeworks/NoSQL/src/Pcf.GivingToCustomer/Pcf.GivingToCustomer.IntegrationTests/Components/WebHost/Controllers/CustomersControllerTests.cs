@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using Pcf.GivingToCustomer.Core.Abstractions.Gateways;
 using Pcf.GivingToCustomer.Core.Domain;
 using Pcf.GivingToCustomer.DataAccess.Repositories;
 using Pcf.GivingToCustomer.WebHost.Controllers;
 using Pcf.GivingToCustomer.WebHost.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Pcf.GivingToCustomer.IntegrationTests.Components.WebHost.Controllers
@@ -15,24 +17,33 @@ namespace Pcf.GivingToCustomer.IntegrationTests.Components.WebHost.Controllers
     public class CustomersControllerTests: IClassFixture<EfDatabaseFixture>
     {
         private readonly CustomersController _customersController;
-        private readonly EfRepository<Customer> _customerRepository;
-        private readonly EfRepository<Preference> _preferenceRepository;
-        
+        private readonly EfRepository<Customer> _customerRepository;        
+        private readonly Mock<IPreferencesGateway> _preferencesGatewayMock;
+
         public CustomersControllerTests(EfDatabaseFixture efDatabaseFixture)
         {
             _customerRepository = new EfRepository<Customer>(efDatabaseFixture.DbContext);
-            _preferenceRepository = new EfRepository<Preference>(efDatabaseFixture.DbContext);
-            
+            _preferencesGatewayMock = new Mock<IPreferencesGateway>();
+
             _customersController = new CustomersController(
-                _customerRepository, 
-                _preferenceRepository);
+                _customerRepository,
+                _preferencesGatewayMock.Object);
         }
         
         [Fact]
         public async Task CreateCustomerAsync_CanCreateCustomer_ShouldCreateExpectedCustomer()
         {
             //Arrange 
-            var preferenceId = Guid.Parse("ef7f299f-92d7-459f-896e-078ed53ef99c");
+            var preference = new Preference()
+            {
+                Id = Guid.Parse("ef7f299f-92d7-459f-896e-078ed53ef99c"),
+                Name = "Театр"
+            };
+
+            _preferencesGatewayMock
+                .Setup(x => x.GetPreferencesByIdsAsync( It.Is<List<Guid>>(ids => ids.Contains(preference.Id))) )
+                .ReturnsAsync(new List<Preference> { preference });
+            
             var request = new CreateOrEditCustomerRequest()
             {
                 Email = "some@mail.ru",
@@ -40,7 +51,7 @@ namespace Pcf.GivingToCustomer.IntegrationTests.Components.WebHost.Controllers
                 LastName = "Петров",
                 PreferenceIds = new List<Guid>()
                 {
-                    preferenceId
+                    preference.Id
                 }
             };
 
@@ -58,7 +69,10 @@ namespace Pcf.GivingToCustomer.IntegrationTests.Components.WebHost.Controllers
             actual.Preferences.Should()
                 .ContainSingle()
                 .And
-                .Contain(x => x.PreferenceId == preferenceId);
+                .Contain(x => x.PreferenceId == preference.Id);
+
+            _preferencesGatewayMock.Verify(x => x.GetPreferencesByIdsAsync(
+                It.Is<List<Guid>>(ids => ids.Contains(preference.Id))), Times.Once);
         }
     }
 }

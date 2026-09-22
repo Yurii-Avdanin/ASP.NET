@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Pcf.GivingToCustomer.Core.Abstractions.Gateways;
 using Pcf.GivingToCustomer.Core.Abstractions.Repositories;
 using Pcf.GivingToCustomer.Core.Domain;
 using Pcf.GivingToCustomer.WebHost.Mappers;
 using Pcf.GivingToCustomer.WebHost.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pcf.GivingToCustomer.WebHost.Controllers
 {
@@ -15,17 +16,20 @@ namespace Pcf.GivingToCustomer.WebHost.Controllers
     /// </summary>
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class CustomersController
-        : ControllerBase
+    public class CustomersController : ControllerBase
     {
         private readonly IRepository<Customer> _customerRepository;
-        private readonly IRepository<Preference> _preferenceRepository;
+        //private readonly IRepository<Preference> _preferenceRepository;
+        private readonly IPreferencesGateway _preferencesGateway;
 
-        public CustomersController(IRepository<Customer> customerRepository, 
-            IRepository<Preference> preferenceRepository)
+        public CustomersController(
+            IRepository<Customer> customerRepository, 
+            //IRepository<Preference> preferenceRepository,
+            IPreferencesGateway preferencesGateway)
         {
             _customerRepository = customerRepository;
-            _preferenceRepository = preferenceRepository;
+            //_preferenceRepository = preferenceRepository;
+            _preferencesGateway = preferencesGateway;
         }
         
         /// <summary>
@@ -36,7 +40,6 @@ namespace Pcf.GivingToCustomer.WebHost.Controllers
         public async Task<ActionResult<List<CustomerShortResponse>>> GetCustomersAsync()
         {
             var customers =  await _customerRepository.GetAllAsync();
-
             var response = customers.Select(x => new CustomerShortResponse()
             {
                 Id = x.Id,
@@ -71,8 +74,8 @@ namespace Pcf.GivingToCustomer.WebHost.Controllers
         public async Task<ActionResult<CustomerResponse>> CreateCustomerAsync(CreateOrEditCustomerRequest request)
         {
             //Получаем предпочтения из бд и сохраняем большой объект
-            var preferences = await _preferenceRepository
-                .GetRangeByIdsAsync(request.PreferenceIds);
+            //*** var preferences = await _preferenceRepository.GetRangeByIdsAsync(request.PreferenceIds);
+            var preferences = await _preferencesGateway.GetPreferencesByIdsAsync(request.PreferenceIds);
 
             Customer customer = CustomerMapper.MapFromModel(request, preferences);
             
@@ -94,8 +97,9 @@ namespace Pcf.GivingToCustomer.WebHost.Controllers
             if (customer == null)
                 return NotFound();
             
-            var preferences = await _preferenceRepository.GetRangeByIdsAsync(request.PreferenceIds);
-            
+            //*** var preferences = await _preferenceRepository.GetRangeByIdsAsync(request.PreferenceIds);
+            var preferences = await _preferencesGateway.GetPreferencesByIdsAsync(request.PreferenceIds);
+
             CustomerMapper.MapFromModel(request, preferences, customer);
 
             await _customerRepository.UpdateAsync(customer);
