@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Pcf.GivingToCustomer.Core.Abstractions.Gateways;
 using Pcf.GivingToCustomer.Core.Abstractions.Repositories;
 using Pcf.GivingToCustomer.Core.Domain;
 using Pcf.GivingToCustomer.WebHost.Mappers;
 using Pcf.GivingToCustomer.WebHost.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pcf.GivingToCustomer.WebHost.Controllers
 {
@@ -15,19 +15,21 @@ namespace Pcf.GivingToCustomer.WebHost.Controllers
     /// </summary>
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class PromocodesController
-        : ControllerBase
+    public class PromocodesController : ControllerBase
     {
         private readonly IRepository<PromoCode> _promoCodesRepository;
-        private readonly IRepository<Preference> _preferencesRepository;
         private readonly IRepository<Customer> _customersRepository;
+        private readonly IPreferencesGateway _preferencesGateway;
 
-        public PromocodesController(IRepository<PromoCode> promoCodesRepository, 
-            IRepository<Preference> preferencesRepository, IRepository<Customer> customersRepository)
+        public PromocodesController(
+            IRepository<PromoCode> promoCodesRepository,             
+            IRepository<Customer> customersRepository,
+            IPreferencesGateway preferencesGateway)
         {
-            _promoCodesRepository = promoCodesRepository;
-            _preferencesRepository = preferencesRepository;
+            _promoCodesRepository = promoCodesRepository;                        
             _customersRepository = customersRepository;
+
+            _preferencesGateway = preferencesGateway;
         }
         
         /// <summary>
@@ -59,9 +61,8 @@ namespace Pcf.GivingToCustomer.WebHost.Controllers
         [HttpPost]
         public async Task<IActionResult> GivePromoCodesToCustomersWithPreferenceAsync(GivePromoCodeRequest request)
         {
-            //Получаем предпочтение по имени
-            var preference = await _preferencesRepository.GetByIdAsync(request.PreferenceId);
-
+            //Получаем предпочтение
+            var preference = await _preferencesGateway.GetPreferenceByIdAsync(request.PreferenceId);
             if (preference == null)
             {
                 return BadRequest();
