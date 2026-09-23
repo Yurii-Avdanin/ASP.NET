@@ -1,15 +1,19 @@
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
-using Pcf.Administration.DataAccess;
-using Pcf.Administration.DataAccess.Repositories;
-using Pcf.Administration.DataAccess.Data;
 using Pcf.Administration.Core.Abstractions.Repositories;
+using Pcf.Administration.Core.Abstractions.Services;
+using Pcf.Administration.Core.Services;
+using Pcf.Administration.DataAccess;
+using Pcf.Administration.DataAccess.Data;
+using Pcf.Administration.DataAccess.Repositories;
+using Pcf.Administration.WebHost.Consumers;
 using System;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Pcf.Administration.WebHost
 {
@@ -44,6 +48,28 @@ namespace Pcf.Administration.WebHost
             {
                 options.Title = "PromoCode Factory Administration API Doc";
                 options.Version = "1.0";
+            });
+
+            services.AddScoped<IEmployeeService, EmployeeService>();
+
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<PromoCodeConsumer>();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(Configuration["RMQSettings:Host"],
+                        Configuration["RMQSettings:VHost"], h =>
+                    {
+                        h.Username(Configuration["RMQSettings:Login"]);
+                        h.Password(Configuration["RabRMQSettingsbitMq:Password"]);
+                    });
+
+                    cfg.ReceiveEndpoint("promocode-received-administration_1", e =>
+                    {
+                        e.ConfigureConsumer<PromoCodeConsumer>(context);
+                    });
+                });
             });
         }
 

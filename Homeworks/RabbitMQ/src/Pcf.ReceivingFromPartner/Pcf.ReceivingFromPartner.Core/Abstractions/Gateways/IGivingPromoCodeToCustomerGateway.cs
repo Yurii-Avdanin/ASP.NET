@@ -3,8 +3,8 @@ using Pcf.ReceivingFromPartner.Core.Domain;
 
 namespace Pcf.ReceivingFromPartner.Core.Abstractions.Gateways
 {
-    public interface IGivingPromoCodeToCustomerGateway
-    {
-        Task GivePromoCodeToCustomer(PromoCode promoCode);
-    }
+    //public interface IGivingPromoCodeToCustomerGateway
+    //{
+    //    Task GivePromoCodeToCustomer(PromoCode promoCode);
+    //}
 }

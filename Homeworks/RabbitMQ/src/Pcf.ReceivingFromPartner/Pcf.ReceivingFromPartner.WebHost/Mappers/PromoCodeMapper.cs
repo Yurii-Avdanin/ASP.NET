@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Pcf.ReceivingFromPartner.Core.Domain;
-using Pcf.ReceivingFromPartner.WebHost.Models;
+﻿using Pcf.ReceivingFromPartner.Core.Domain;
+using Pcf.ReceivingFromPartner.Core.DTOs;
+using System;
 
 namespace Pcf.ReceivingFromPartner.WebHost.Mappers
 {
@@ -11,7 +8,6 @@ namespace Pcf.ReceivingFromPartner.WebHost.Mappers
     {
         public static PromoCode MapFromModel(ReceivingPromoCodeRequest request, Preference preference, Partner partner)
         {
-
             var promocode = new PromoCode();
 
             promocode.PartnerId = partner.Id;
