@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pcf.ReceivingFromPartner.WebHost.Models
+namespace Pcf.ReceivingFromPartner.Core.DTOs
 {
     /// <example>
     ///{
