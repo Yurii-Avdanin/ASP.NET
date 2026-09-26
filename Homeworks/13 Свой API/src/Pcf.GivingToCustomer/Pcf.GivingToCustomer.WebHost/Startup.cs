@@ -75,10 +75,12 @@ namespace Pcf.GivingToCustomer.WebHost
                 });
             });
 
-            services.AddHttpClient<IPreferencesGateway, PreferencesGateway>(c =>
-            {
-                c.BaseAddress = new Uri(Configuration["IntegrationSettings:ReferencesInfoApiUrl"]);
-            });
+            //services.AddHttpClient<IPreferencesGateway, PreferencesGateway>(c =>
+            //{
+            //    c.BaseAddress = new Uri(Configuration["IntegrationSettings:ReferencesInfoApiUrl"]);
+            //});
+
+            services.AddGrpc(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

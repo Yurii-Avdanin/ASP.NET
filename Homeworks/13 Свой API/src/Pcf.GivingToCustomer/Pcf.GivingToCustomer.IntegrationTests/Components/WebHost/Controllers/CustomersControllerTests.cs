@@ -18,16 +18,18 @@ namespace Pcf.GivingToCustomer.IntegrationTests.Components.WebHost.Controllers
     {
         private readonly CustomersController _customersController;
         private readonly EfRepository<Customer> _customerRepository;
-        private readonly Mock<IPreferencesGateway> _preferencesGatewayMock;
+        //private readonly Mock<IPreferencesGateway> _preferencesGatewayMock;
+        private readonly Mock<IPreferencesGatewayGrpc> _preferencesGatewayGrpcMock;
 
         public CustomersControllerTests(EfDatabaseFixture efDatabaseFixture)
         {
             _customerRepository = new EfRepository<Customer>(efDatabaseFixture.DbContext);
-            _preferencesGatewayMock = new Mock<IPreferencesGateway>();
+            //_preferencesGatewayMock = new Mock<IPreferencesGateway>();
+            _preferencesGatewayGrpcMock = new Mock<IPreferencesGatewayGrpc>();
 
             _customersController = new CustomersController(
                 _customerRepository,
-                _preferencesGatewayMock.Object);
+                _preferencesGatewayGrpcMock.Object);
         }
 
         [Fact]
@@ -40,7 +42,7 @@ namespace Pcf.GivingToCustomer.IntegrationTests.Components.WebHost.Controllers
                 Name = "Театр"
             };
 
-            _preferencesGatewayMock
+            _preferencesGatewayGrpcMock
                 .Setup(x => x.GetPreferencesByIdsAsync(It.Is<List<Guid>>(ids => ids.Contains(preference.Id))))
                 .ReturnsAsync(new List<Preference> { preference });
 

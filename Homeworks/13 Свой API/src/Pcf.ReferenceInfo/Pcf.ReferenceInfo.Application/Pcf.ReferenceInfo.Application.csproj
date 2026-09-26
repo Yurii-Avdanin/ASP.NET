@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Pcf.Shared\Pcf.Shared.csproj" />
     <ProjectReference Include="..\Pcf.ReferenceInfo.Core\Pcf.ReferenceInfo.Core.csproj" />
   </ItemGroup>
 

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package preference.v1;
+option csharp_namespace = "gRpc.Preference.V1";
+
+service GrpcPreferenceService {
+    rpc GetAll (google.protobuf.Empty) returns (ResponseGrpcPreferenceRange);
+    rpc GetById (RequestGrpcById) returns (ResponseGrpcPreference);
+    rpc GetByRange (RequestGrpcByRange) returns (ResponseGrpcPreferenceRange);
+}
+
+message PreferenceGrpc {
+    string id = 1;
+    string name = 2;    
+}
+
+message RequestGrpcById {
+    string id = 1;
+}
+
+message RequestGrpcByRange {
+    repeated string ids = 1;
+}
+
+message ResponseGrpcPreference {    
+    PreferenceGrpc preference = 1;
+}
+
+message ResponseGrpcPreferenceRange {    
+    repeated PreferenceGrpc preferences = 1;
+}
