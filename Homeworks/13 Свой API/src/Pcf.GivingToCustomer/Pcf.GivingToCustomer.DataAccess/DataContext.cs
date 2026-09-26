@@ -1,0 +1,41 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Pcf.GivingToCustomer.Core.Domain;
+
+namespace Pcf.GivingToCustomer.DataAccess
+{
+    public class DataContext
+        : DbContext
+    {
+        public DbSet<PromoCode> PromoCodes { get; set; }
+
+        public DbSet<Customer> Customers { get; set; }        
+
+        public DataContext()
+        {
+
+        }
+
+        public DataContext(DbContextOptions<DataContext> options)
+            : base(options)
+        {
+
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {            
+            modelBuilder.Ignore<Preference>();
+
+            modelBuilder.Entity<CustomerPreference>()
+                .HasKey(bc => new { bc.CustomerId, bc.PreferenceId });
+            modelBuilder.Entity<CustomerPreference>()
+                .HasOne(bc => bc.Customer)
+                .WithMany(b => b.Preferences)
+                .HasForeignKey(bc => bc.CustomerId);
+            modelBuilder.Entity<CustomerPreference>()
+                .Ignore(x => x.Preference);
+
+            modelBuilder.Entity<PromoCode>()
+                .Ignore(x => x.Preference);
+        }
+    }
+}
