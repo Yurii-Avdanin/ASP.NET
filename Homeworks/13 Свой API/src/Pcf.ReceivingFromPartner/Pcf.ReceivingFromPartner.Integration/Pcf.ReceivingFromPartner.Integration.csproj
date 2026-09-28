@@ -6,12 +6,17 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Pcf.Shared\Pcf.Shared.csproj" />
+      <ProjectReference Include="..\Pcf.ReceivingFromPartner.Application\Pcf.ReceivingFromPartner.Application.csproj" />
       <ProjectReference Include="..\Pcf.ReceivingFromPartner.Core\Pcf.ReceivingFromPartner.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Grpc.AspNetCore" Version="2.84.0" />
       <PackageReference Include="MassTransit" Version="9.2.2" />
       <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
     </ItemGroup>
 
+	<ItemGroup>
+	  <Protobuf Include="..\..\Pcf.Shared\Contracts\gRPC\Preference.proto" GrpcServices="Client" />
+	</ItemGroup>
 </Project>

@@ -7,11 +7,15 @@ namespace Pcf.ReceivingFromPartner.Application.Sevices;
 
 public class PreferencesService : IPreferencesService
 {    
-    private readonly IPreferencesGateway _preferencesGateway;
+    //private readonly IPreferencesGateway _preferencesGateway;
+    private readonly IPreferencesGetewayGrpc _preferencesGatewayGrpc;
 
-    public PreferencesService(IPreferencesGateway preferencesGateway)
+    public PreferencesService(
+        //IPreferencesGateway preferencesGateway,
+        IPreferencesGetewayGrpc preferencesGatewayGrpc)
     {
-        _preferencesGateway = preferencesGateway;
+        //_preferencesGateway = preferencesGateway;
+        _preferencesGatewayGrpc = preferencesGatewayGrpc;
     }
 
     /// <summary>
@@ -20,7 +24,8 @@ public class PreferencesService : IPreferencesService
     /// <returns></returns>   
     public async Task<List<PreferenceResponse>> GetPreferencesAsync()
     {
-        var preferences = await _preferencesGateway.GetAllAsync();
+        //var preferences = await _preferencesGateway.GetAllAsync();
+        var preferences = await _preferencesGatewayGrpc.GetAllAsync();
 
         return preferences.ToPreferenceResponse().ToList();
     }

@@ -16,17 +16,20 @@ namespace Pcf.GivingToCustomer.WebHost.Controllers
     /// </summary>
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class CustomersController
-        : ControllerBase
+    public class CustomersController : ControllerBase
     {
         private readonly IRepository<Customer> _customerRepository;
-        private readonly IPreferencesGateway _preferencesGateway;
+        //private readonly IPreferencesGateway _preferencesGateway;
+        private readonly IPreferencesGatewayGrpc _preferencesGatewayGrpc;
+        
 
         public CustomersController(IRepository<Customer> customerRepository,
-            IPreferencesGateway preferencesGateway)
+            //IPreferencesGateway preferencesGateway,
+            IPreferencesGatewayGrpc preferencesGetewayGrpc)
         {
             _customerRepository = customerRepository;
-            _preferencesGateway = preferencesGateway;
+            //_preferencesGateway = preferencesGateway;
+            _preferencesGatewayGrpc = preferencesGetewayGrpc;
         }
 
         /// <summary>
@@ -72,7 +75,8 @@ namespace Pcf.GivingToCustomer.WebHost.Controllers
         public async Task<ActionResult<CustomerResponse>> CreateCustomerAsync(CreateOrEditCustomerRequest request)
         {
             //Получаем предпочтения из бд и сохраняем большой объект
-            var preferences = await _preferencesGateway.GetPreferencesByIdsAsync(request.PreferenceIds);
+            //var preferences = await _preferencesGateway.GetPreferencesByIdsAsync(request.PreferenceIds);
+            var preferences = await _preferencesGatewayGrpc.GetPreferencesByIdsAsync(request.PreferenceIds);
 
             Customer customer = CustomerMapper.MapFromModel(request, preferences);
 
@@ -94,7 +98,8 @@ namespace Pcf.GivingToCustomer.WebHost.Controllers
             if (customer == null)
                 return NotFound();
 
-            var preferences = await _preferencesGateway.GetPreferencesByIdsAsync(request.PreferenceIds);
+            //var preferences = await _preferencesGateway.GetPreferencesByIdsAsync(request.PreferenceIds);
+            var preferences = await _preferencesGatewayGrpc.GetPreferencesByIdsAsync(request.PreferenceIds);
 
             CustomerMapper.MapFromModel(request, preferences, customer);
 

@@ -3,8 +3,7 @@ using Pcf.GivingToCustomer.Core.Domain;
 
 namespace Pcf.GivingToCustomer.DataAccess
 {
-    public class DataContext
-        : DbContext
+    public class DataContext : DbContext
     {
         public DbSet<PromoCode> PromoCodes { get; set; }
 
