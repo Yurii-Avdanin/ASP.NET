@@ -11,8 +11,7 @@ using Pcf.GivingToCustomer.DataAccess;
 
 namespace Pcf.GivingToCustomer.DataAccess.Repositories
 {
-    public class EfRepository<T>
-        : IRepository<T>
+    public class EfRepository<T> : IRepository<T>
         where T : BaseEntity
     {
         private readonly DataContext _dataContext;
@@ -29,12 +28,22 @@ namespace Pcf.GivingToCustomer.DataAccess.Repositories
             return entities;
         }
 
+        public IQueryable<T> GetAllQueryable()
+        { 
+            return _dataContext.Set<T>();
+        }
+
         public async Task<T> GetByIdAsync(Guid id)
         {
             var entity = await _dataContext.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
 
             return entity;
         }
+   
+        //public IQueryable<Customer> GetCustomerById(Guid id)
+        //{
+        //    return _customerRepository.GetAllQueryable().Where(c => c.Id == id);
+        //}
 
         public async Task<IEnumerable<T>> GetRangeByIdsAsync(List<Guid> ids)
         {

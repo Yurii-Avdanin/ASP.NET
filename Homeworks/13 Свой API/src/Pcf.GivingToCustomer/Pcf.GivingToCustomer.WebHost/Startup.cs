@@ -14,8 +14,11 @@ using Pcf.GivingToCustomer.DataAccess.Data;
 using Pcf.GivingToCustomer.DataAccess.Repositories;
 using Pcf.GivingToCustomer.Integration;
 using Pcf.GivingToCustomer.WebHost.Consumers;
-using Pcf.Shared.Contracts;
+using Pcf.GivingToCustomer.WebHost.GraphQL.DataLoaders;
+using Pcf.GivingToCustomer.WebHost.GraphQL.Queries;
+using Pcf.GivingToCustomer.WebHost.GraphQL.Types;
 using System;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Pcf.GivingToCustomer.WebHost
@@ -38,6 +41,14 @@ namespace Pcf.GivingToCustomer.WebHost
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<INotificationGateway, NotificationGateway>();
             services.AddScoped<IDbInitializer, EfDbInitializer>();
+
+            services.AddDbContextFactory<DataContext>(x =>
+            {
+                x.UseNpgsql(Configuration.GetConnectionString("PromocodeFactoryGivingToCustomerDb"));
+                x.UseSnakeCaseNamingConvention();
+                x.UseLazyLoadingProxies();
+            });
+
             services.AddDbContext<DataContext>(x =>
             {
                 //x.UseSqlite("Filename=PromocodeFactoryGivingToCustomerDb.sqlite");
@@ -75,10 +86,27 @@ namespace Pcf.GivingToCustomer.WebHost
                 });
             });
 
-            services.AddHttpClient<IPreferencesGateway, PreferencesGateway>(c =>
-            {
-                c.BaseAddress = new Uri(Configuration["IntegrationSettings:ReferencesInfoApiUrl"]);
-            });
+            //services.AddHttpClient<IPreferencesGateway, PreferencesGateway>(c =>
+            //{
+            //    c.BaseAddress = new Uri(Configuration["IntegrationSettings:ReferencesInfoApiUrl"]);
+            //});
+
+            services.AddGrpc(Configuration);
+
+            services.AddScoped<CustomerByIdDataLoader>();
+            services.AddScoped<CustomerPreferenceIdsDataLoader>();
+
+            services.AddGraphQLServer()                
+                .AddQueryType()
+                .AddTypeExtension<CustomerQueries>()
+                .AddTypeExtension<PreferenceQueries>()                
+                .AddType<CustomerType>()
+                .AddType<PreferenceType>()
+                .AddType<PromoCodeCustomerType>()
+                .AddType<PromoCodeType>()
+                .AddFiltering()
+                .AddSorting()
+                .AddProjections();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,13 +127,15 @@ namespace Pcf.GivingToCustomer.WebHost
                 x.DocExpansion = "list";
             });
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapGraphQL();
+                endpoints.MapNitroApp("/graphql/ui");
             });
 
             dbInitializer.InitializeDb();

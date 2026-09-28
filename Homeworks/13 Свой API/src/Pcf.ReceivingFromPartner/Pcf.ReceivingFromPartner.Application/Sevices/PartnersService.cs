@@ -14,19 +14,22 @@ public class PartnersService : IPartnersService
     private readonly IPromoCodeMessageGateway _promoCodeMessageGateway;
 
     private readonly INotificationGateway _notificationGateway;
-    private readonly IPreferencesGateway _preferencesGateway;
+    //private readonly IPreferencesGateway _preferencesGateway;
+    private readonly IPreferencesGetewayGrpc _preferencesGatewayGrpc;
 
     public PartnersService(
         IRepository<Partner> partnersRepository,        
         IPromoCodeMessageGateway promoCodeMessageGateway,
         INotificationGateway notificationGateway,
-        IPreferencesGateway preferencesGateway)
+        //IPreferencesGatewayHttp preferencesGateway,
+        IPreferencesGetewayGrpc preferencesGatewayGrpc)
     {
         _partnersRepository = partnersRepository;        
         _promoCodeMessageGateway = promoCodeMessageGateway;
 
         _notificationGateway = notificationGateway;
-        _preferencesGateway = preferencesGateway;
+        //_preferencesGateway = preferencesGateway;
+        _preferencesGatewayGrpc = preferencesGatewayGrpc;
     }
 
     /// <summary>
@@ -213,7 +216,8 @@ public class PartnersService : IPartnersService
             throw new InvalidOperationException("Данный промокод уже был выдан ранее");
 
         //Получаем предпочтение        
-        var preference = await _preferencesGateway.GetByIdAsync(request.PreferenceId);
+        //var preference = await _preferencesGateway.GetByIdAsync(request.PreferenceId);
+        var preference = await _preferencesGatewayGrpc.GetByIdAsync(request.PreferenceId);
 
         if (preference == null)
             throw new InvalidOperationException("Предпочтение не найдено");

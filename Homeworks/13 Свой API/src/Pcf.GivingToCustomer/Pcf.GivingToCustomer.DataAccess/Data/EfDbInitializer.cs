@@ -1,4 +1,6 @@
-﻿namespace Pcf.GivingToCustomer.DataAccess.Data
+﻿using Pcf.GivingToCustomer.Core.Domain;
+
+namespace Pcf.GivingToCustomer.DataAccess.Data
 {
     public class EfDbInitializer
         : IDbInitializer
@@ -13,7 +15,10 @@
         public void InitializeDb()
         {
             _dataContext.Database.EnsureDeleted();
-            _dataContext.Database.EnsureCreated();           
+            _dataContext.Database.EnsureCreated();
+
+            _dataContext.AddRange(FakeDataFactory.PromoCodes);
+            _dataContext.SaveChanges();
 
             _dataContext.AddRange(FakeDataFactory.Customers);
             _dataContext.SaveChanges();
