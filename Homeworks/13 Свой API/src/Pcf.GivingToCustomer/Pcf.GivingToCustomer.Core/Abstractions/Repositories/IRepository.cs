@@ -7,10 +7,11 @@ using Pcf.GivingToCustomer.Core.Domain;
 
 namespace Pcf.GivingToCustomer.Core.Abstractions.Repositories
 {
-    public interface IRepository<T>
-        where T : BaseEntity
+    public interface IRepository<T> where T : BaseEntity
     {
         Task<IEnumerable<T>> GetAllAsync();
+
+        IQueryable<T> GetAllQueryable();
 
         Task<T> GetByIdAsync(Guid id);
 

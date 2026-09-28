@@ -7,14 +7,14 @@ namespace Pcf.ReceivingFromPartner.Application.Sevices;
 
 public class PreferencesService : IPreferencesService
 {    
-    private readonly IPreferencesGateway _preferencesGateway;
+    //private readonly IPreferencesGateway _preferencesGateway;
     private readonly IPreferencesGetewayGrpc _preferencesGatewayGrpc;
 
     public PreferencesService(
-        IPreferencesGateway preferencesGateway,
+        //IPreferencesGateway preferencesGateway,
         IPreferencesGetewayGrpc preferencesGatewayGrpc)
     {
-        _preferencesGateway = preferencesGateway;
+        //_preferencesGateway = preferencesGateway;
         _preferencesGatewayGrpc = preferencesGatewayGrpc;
     }
 

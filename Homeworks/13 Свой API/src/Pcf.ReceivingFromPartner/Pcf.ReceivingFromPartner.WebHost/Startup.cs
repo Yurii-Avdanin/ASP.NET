@@ -70,7 +70,7 @@ namespace Pcf.ReceivingFromPartner.WebHost
                 });
             });
 
-            //services.AddHttpClient<IPreferencesGatewayHttp, PreferencesGatewayHttp>(c =>
+            //services.AddHttpClient<IPreferencesGateway, PreferencesGateway>(c =>
             //{
             //    c.BaseAddress = new Uri(Configuration["IntegrationSettings:ReferencesInfoApiUrl"]);
             //});

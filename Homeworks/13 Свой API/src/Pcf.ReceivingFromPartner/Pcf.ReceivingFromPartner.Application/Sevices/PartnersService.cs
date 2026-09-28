@@ -14,7 +14,7 @@ public class PartnersService : IPartnersService
     private readonly IPromoCodeMessageGateway _promoCodeMessageGateway;
 
     private readonly INotificationGateway _notificationGateway;
-    //private readonly IPreferencesGatewayHttp _preferencesGateway;
+    //private readonly IPreferencesGateway _preferencesGateway;
     private readonly IPreferencesGetewayGrpc _preferencesGatewayGrpc;
 
     public PartnersService(

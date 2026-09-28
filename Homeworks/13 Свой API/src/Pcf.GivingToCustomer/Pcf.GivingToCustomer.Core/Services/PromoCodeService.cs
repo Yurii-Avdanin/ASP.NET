@@ -14,21 +14,21 @@ public class PromoCodeService : IPromoCodeService
 {
     private readonly IRepository<PromoCode> _promoCodesRepository;    
     private readonly IRepository<Customer> _customersRepository;
-    private readonly IPreferencesGateway _preferencesGateway;
+    private readonly IPreferencesGatewayGrpc _preferencesGatewayGrpc;
 
     public PromoCodeService(
            IRepository<PromoCode> promoCodesRepository,           
            IRepository<Customer> customersRepository,
-           IPreferencesGateway preferencesGateway)
+           IPreferencesGatewayGrpc preferencesGatewayGrpc)
     {
         _promoCodesRepository = promoCodesRepository;        
         _customersRepository = customersRepository;
-        _preferencesGateway = preferencesGateway;
+        _preferencesGatewayGrpc = preferencesGatewayGrpc;
     }
 
     public async Task GivePromoCodesToCustomersWithPreferenceAsync(PromoCodeRequestDto request)           
     {
-        var preference = await _preferencesGateway.GetPreferenceByIdAsync(request.PreferenceId);
+        var preference = await _preferencesGatewayGrpc.GetPreferenceByIdAsync(request.PreferenceId);
         if (preference == null)
             throw new InvalidOperationException("Предпочтение не найдено");
 

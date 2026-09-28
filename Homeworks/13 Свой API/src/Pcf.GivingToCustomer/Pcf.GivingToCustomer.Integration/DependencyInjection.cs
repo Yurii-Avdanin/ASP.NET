@@ -2,6 +2,7 @@
 using Grpc.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pcf.GivingToCustomer.Core.Abstractions.Gateways;
 using System;
 using System.Net.Http;
 
@@ -27,15 +28,14 @@ public static class DependencyInjection
                 });
             }
         }).ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
-        {
-            // Явно ограничиваем количество соединений к серверу
+        {            
             MaxConnectionsPerServer = 10,
             PooledConnectionLifetime = TimeSpan.FromMinutes(10),
             PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
             EnableMultipleHttp2Connections = true
         });
 
-        services.AddScoped<PreferencesGatewayGrpc, PreferencesGatewayGrpc>();
+        services.AddScoped<IPreferencesGatewayGrpc, PreferencesGatewayGrpc>();        
 
         return services;
     }
